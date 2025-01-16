@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+#  curl commands to reload the data from the devices
+#
+#
+
+set -e
+
+printf "⏳ Loading context data "
+
+#
+# Create service for iot devices. 
+# This service will group iot device in iot-agent
+#
+curl -s -o /dev/null -X POST \
+  'http://iot-agent:4041/iot/services' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+ "services": [
+   {
+     "apikey":      "group4",
+     "cbroker":     "http://orion:1026",
+     "entity_type": "Thing",
+     "resource":    ""
+   }
+ ]
+}'
+
+#
+# Create device to be update
+# This device represents a sensor
+#
+curl -s -o /dev/null -X POST \
+  'http://iot-agent:4041/iot/devices' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+ "devices": [
+   {
+     "device_id":   "movement01",
+	 "apikey": "group4",
+     "entity_name": "Movement:01",
+     "entity_type": "Sensor",
+     "protocol":    "PDI-IoTA-UltraLight",
+     "transport":   "MQTT",
+     "timezone":    "America/Sao_Paulo",
+     "attributes": [
+       { "object_id": "s", "name": "Status", "type": "Text" }
+     ]
+   },
+   {
+     "device_id":   "buttom01",
+	 "apikey": "group4",
+     "entity_name": "Buttom:01",
+     "entity_type": "Sensor",
+     "protocol":    "PDI-IoTA-UltraLight",
+     "transport":   "MQTT",
+     "timezone":    "America/Sao_Paulo",
+     "attributes": [
+       { "object_id": "s", "name": "Status", "type": "Text" }
+     ]
+   },
+   {
+     "device_id":   "sensor01",
+	 "apikey": "group4",
+     "entity_name": "Sensor:01",
+     "entity_type": "Sensor",
+     "protocol":    "PDI-IoTA-UltraLight",
+     "transport":   "MQTT",
+     "timezone":    "America/Sao_Paulo",
+     "attributes": [
+       { "object_id": "l", "name": "Light", "type": "Text" }
+     ]
+   },
+   {
+     "device_id":   "led01",
+	 "apikey": "group4",
+     "entity_name": "Led:01",
+     "entity_type": "Sensor",
+     "protocol":    "PDI-IoTA-UltraLight",
+     "transport":   "MQTT",
+     "timezone":    "America/Sao_Paulo",
+     "attributes": [
+       { "object_id": "p", "name": "Power", "type": "Text" }
+     ]
+   }
+ ]
+}
+'
+echo -e " \033[1;32mdone\033[0m"
