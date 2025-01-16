@@ -52,9 +52,9 @@ curl -s -o /dev/null -X POST \
      ]
    },
    {
-     "device_id":   "buttom01",
+     "device_id":   "button01",
 	 "apikey": "group4",
-     "entity_name": "Buttom:01",
+     "entity_name": "Button:01",
      "entity_type": "Sensor",
      "protocol":    "PDI-IoTA-UltraLight",
      "transport":   "MQTT",
