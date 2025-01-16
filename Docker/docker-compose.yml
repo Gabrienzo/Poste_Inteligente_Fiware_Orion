@@ -1,0 +1,78 @@
+version: "3.1"
+
+volumes:
+    mongodb: ~
+    mosquitto_data: {}
+    mosquitto_config: {}
+
+services:
+    iot-agent:
+        image: fiware/iotagent-json
+        hostname: iot-agent
+        container_name: fiware-iot-agent
+        depends_on:
+            - mongodb
+        expose:
+            - "4041"
+            - "7896"
+        ports:
+            - "4041:4041"
+            - "7896:7896"
+        environment:
+            - "IOTA_CB_HOST=orion"
+            - "IOTA_CB_PORT=1026"
+            - "IOTA_NORTH_PORT=4041"
+            - "IOTA_REGISTRY_TYPE=mongodb"
+            - "IOTA_MONGO_HOST=mongodb"
+            - "IOTA_MONGO_PORT=27017"
+            - "IOTA_MONGO_DB=iotagent-json"
+            - "IOTA_HTTP_PORT=7896"
+            - "IOTA_PROVIDER_URL=http://iot-agent:4041"
+        volumes:
+            - ./iot-agent-config.json:/opt/iot-agent/config/iot-agent-config.json
+        networks:
+            - fiware-network
+
+    mongodb:
+        image: mongo:4.2
+        hostname: mongodb
+        container_name: db-mongo
+        ports:
+            - "27017:27017"
+        command: --bind_ip_all
+        volumes:
+            - mongodb:/data
+        networks:
+            - fiware-network
+
+    orion:
+        image: fiware/orion
+        hostname: orion
+        container_name: fiware-orion
+        depends_on:
+            - mongodb
+        expose:
+            - "1026"
+        ports:
+            - "1026:1026"
+        command: -dbURI mongodb://mongodb:27017
+        networks:
+            - fiware-network
+
+    mosquitto:
+        image: eclipse-mosquitto
+        hostname: mosquitto
+        container_name: mosquitto
+        ports:
+            - "1883:1883"
+            - "9001:9001"
+        volumes:
+            - mosquitto_data:/mosquitto/data
+            - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+        restart: unless-stopped
+        networks:
+            - fiware-network
+
+networks:
+  fiware-network:
+    driver: bridge

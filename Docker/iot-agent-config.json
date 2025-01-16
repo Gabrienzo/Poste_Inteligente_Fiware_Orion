@@ -1,0 +1,52 @@
+{
+  "iot-agent": {
+    "logLevel": "DEBUG",
+    "contextBroker": {
+      "url": "http://orion:1026/v2",
+      "headers": {
+        "fiware-service": "myHome",
+        "fiware-servicepath": "/environment"
+      }
+    },
+    "mqtt": {
+      "host": "mosquitto",
+      "port": 1883,
+      "clientId": "iot-agent",
+      "qos": 1
+    },
+    "server": {
+      "port": 4041
+    },
+    "defaultKey": "1234",
+    "defaultTransport": "MQTT",
+    "registry": {
+      "type": "mongodb",
+      "host": "mongodb",
+      "port": 27017,
+      "db": "iotagent-json"
+    },
+    "devices": [
+      {
+        "device_id": "sensor01",
+        "entity_name": "LivingRoomSensor01",
+        "entity_type": "multiSensor",
+        "transport": "MQTT",
+        "attributes": [
+          { "object_id": "t", "name": "Temperature", "type": "celsius" },
+          { "object_id": "l", "name": "Luminosity", "type": "lumens" }
+        ]
+      },
+      {
+        "device_id": "sensor02",
+        "entity_name": "LivingRoomSensor02",
+        "entity_type": "multiSensor",
+        "transport": "MQTT",
+        "attributes": [
+          { "object_id": "t", "name": "Temperature", "type": "celsius" },
+          { "object_id": "l", "name": "Luminosity", "type": "lumens" }
+        ]
+      }
+    ]
+  }
+}
+ 
