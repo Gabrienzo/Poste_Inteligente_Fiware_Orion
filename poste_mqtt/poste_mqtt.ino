@@ -3,24 +3,24 @@
 
 // Temporizador e botão
 #define timeSeconds 10
-#define BUTTON_PIN 18
+#define BUTTON_PIN 14
 
 // LEDs
-const int led[3] = {2, 4, 5};
+const int led[3] = {25, 26, 27};
 
 // Sensor de luz (LDR)
-const int ldrPin = 19;
+const int ldrPin = 32;
 int ldrValue = 0;
 
 // Sensor de movimento
-const int motionSensor = 21;
+const int motionSensor = 12;
 
 // Configuração do Wi-Fi e MQTT
 const char* ssid = "nome do wifi";          // Substitua pelo seu SSID
-const char* password = "senha do wifi";      // Substitua pela sua senha Wi-Fi
-const char* mqtt_server = "10.0.0.151";  // Substitua pelo IP do seu broker MQTT
-const char* mqtt_user = "posteESP";   // Usuário MQTT
-const char* mqtt_pass = "posteimd";     // Senha MQTT
+const char* password = "senha";      // Substitua pela sua senha Wi-Fi
+const char* mqtt_server = "ip";  // Substitua pelo IP do seu broker MQTT
+//const char* mqtt_user = "posteESP";   // Usuário MQTT
+//const char* mqtt_pass = "posteimd";     // Senha MQTT
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -53,7 +53,7 @@ void setupWiFi() {
 void reconnect() {
   while (!client.connected()) {
     Serial.print("Tentando conectar ao MQTT...");
-    if (client.connect("ESP32Client", mqtt_user, mqtt_pass)) {
+    if (client.connect("ESP32Client")) {
       Serial.println("Conectado!");
     } else {
       Serial.print("Falhou, rc=");
@@ -70,13 +70,13 @@ void IRAM_ATTR detectsMovement() {
     Serial.println("Movimento detectado!");
     motionDetected = true;
     // Publicar no tópico de movimento
-    client.publish("movimento/status", "detected");
+    client.publish("/ul/group4/movement01/attrs", "m|detected");
   }
 
   // Liga os LEDs
-  for (int i = 0; i < 3; i++) {
-    digitalWrite(led[i], HIGH);
-  }
+  digitalWrite(led[0], HIGH);
+  digitalWrite(led[1], HIGH);
+  digitalWrite(led[2], HIGH);
 
   startTimer = true;
   lastTrigger = millis();
@@ -94,10 +94,12 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(motionSensor), detectsMovement, RISING);
 
   // Configura os LEDs como saída e desliga todos
-  for (int i = 0; i < 3; i++) {
-    pinMode(led[i], OUTPUT);
-    digitalWrite(led[i], LOW);
-  }
+  pinMode(led[0], OUTPUT);
+  pinMode(led[1], OUTPUT);
+  pinMode(led[2], OUTPUT);
+  digitalWrite(led[0], LOW);
+  digitalWrite(led[1], LOW);
+  digitalWrite(led[2], LOW);
 
   // Configuração do Wi-Fi e MQTT
   setupWiFi();
@@ -113,37 +115,38 @@ void loop() {
   int buttonState = digitalRead(BUTTON_PIN);
   if (buttonState == LOW) { // Botão pressionado
     Serial.println("Botão pressionado!");
-    client.publish("botao/status", "pressionado");  // Publica no tópico do botão
+    client.publish("/ul/group4/button01/attrs", "b|pressionado");  // Publica no tópico do botão
     delay(200); // Debounce
   }
 
-  // Lê o valor do sensor de luz (LDR) a cada 10 segundos
-  if (now - lastLdrRead >= 10000) {
+  /// Lê o valor do sensor de luz (LDR) a cada 5 segundos
+  if (now - lastLdrRead >= 5000) {
     ldrValue = analogRead(ldrPin);
     Serial.print("Intensidade de Luz (LDR): ");
     Serial.println(ldrValue);
-    
-    // Publica o valor da luz no tópico
-    client.publish("sensor/luz", String(ldrValue).c_str());
+    client.publish("/ul/group4/sensor01/attrs", "l|" + ldrValue);
 
     // Controla os LEDs com base na luz ambiente
     if (!startTimer) { // Apenas controla os LEDs se não houver movimento detectado
-      if (ldrValue < 1000) {         // Baixa intensidade de luz
-        ligarLeds(1);                // Liga 1 LED
-        client.publish("led/potencia", "1");
-      } else if (ldrValue < 3000) {  // Intensidade média de luz
-        ligarLeds(2);                // Liga 2 LEDs
-        client.publish("led/potencia", "2");
-      } else {                       // Alta intensidade de luz
-        ligarLeds(3);                // Liga 3 LEDs
-        client.publish("led/potencia", "3");
+      if (ldrValue < 500) {         // Baixa intensidade de luz
+        digitalWrite(led[0], HIGH);
+        digitalWrite(led[1], HIGH);
+        digitalWrite(led[2], HIGH);
+      } else if (ldrValue < 1000) {  // Intensidade média de luz
+        digitalWrite(led[0], HIGH);
+        digitalWrite(led[1], HIGH);
+        digitalWrite(led[2], LOW);
+      } else if (ldrValue < 2000) {                       // Alta intensidade de luz
+        digitalWrite(led[0], HIGH);
+        digitalWrite(led[1], LOW);
+        digitalWrite(led[2], LOW);
+      } else {
+        digitalWrite(led[0], LOW);
+        digitalWrite(led[1], LOW);
+        digitalWrite(led[2], LOW);
       }
     }
-
-    // Atualiza o tempo da última leitura do LDR
-    lastLdrRead = now;
   }
-
   // Reconectar ao broker MQTT se necessário
   if (!client.connected()) {
     reconnect();
@@ -155,13 +158,13 @@ void loop() {
     if (motionDetected) {
       Serial.println("Movimento parado. Desligando LEDs...");
       motionDetected = false;
-      client.publish("movimento/status", "parado"); // Publicar no tópico de movimento
+      client.publish("movimento/status", "m|parado"); // Publicar no tópico de movimento
     }
 
     // Desliga os LEDs
-    for (int i = 0; i < 3; i++) {
-      digitalWrite(led[i], LOW);
-    }
+    digitalWrite(led[0], LOW);
+    digitalWrite(led[1], LOW);
+    digitalWrite(led[2], LOW);
 
     startTimer = false;
   }
@@ -169,13 +172,3 @@ void loop() {
   delay(100); // Pequeno atraso para estabilidade
 }
 
-// Função para controlar a quantidade de LEDs ligados
-void ligarLeds(int quantidade) {
-  for (int i = 0; i < 3; i++) {
-    if (i < quantidade) {
-      digitalWrite(led[i], HIGH); // Liga os LEDs necessários
-    } else {
-      digitalWrite(led[i], LOW);  // Desliga os LEDs restantes
-    }
-  }
-}
