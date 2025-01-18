@@ -11,8 +11,7 @@ Este repositório contém a aplicação para o projeto de **Poste Inteligente**,
 ## Índice
 - [Requisitos](#requisitos)
 - [Configuração do Docker](#configuração-do-docker)
-- [Configuração do Front-End](#configuração-do-front-end)
-- [Executando o Frontend (Nuxt.js)](#executando-o-frontend-nuxtjs)
+- [Executando o Front-End](#executando-o-front-end)
 - [Executando a API](#executando-a-api)
 - [Considerações Finais](#considerações-finais)
 
@@ -25,20 +24,27 @@ Antes de começar, você precisará ter os seguintes softwares instalados:
 - [Node.js](https://nodejs.org/) (recomendado: versão LTS)
 - [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
 - [Java JDK](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) (para executar a API)
+- [IntelliJ IDEA](https://www.jetbrains.com/pt-br/idea/download/?section=windows) (IDE para API)
 
 ---
 
 ## Configuração do Docker
-
-1. **Acesse a pasta `Docker`:**
-   ```bash
-   cd Docker
+1. **Acesse a pasta do projeto `Poste_Inteligente_Fiware_Orion`**
+    ```bash
+   cd Poste_Inteligente_Fiware_Orion/
    ```
-2. **Inicie os contêineres**
+2. **Acesse a pasta `Docker`:**
+   ```bash
+   cd Docker/
+   ```
+3. **Inicie os contêineres**
+    ```bash
+   sudo ./services create
+    ```
    ```bash
    sudo ./services start
    ```
-3. **Criar entidades através do MQTT**
+4. **Criar entidades através do MQTT**
    ```bash
    mosquitto_pub -h localhost -t "/ul/group4/movement01/attrs" -m "s|1000"
    ```
@@ -51,13 +57,14 @@ Antes de começar, você precisará ter os seguintes softwares instalados:
    ```bash
    mosquitto_pub -h localhost -t "/ul/group4/led01/attrs" -m "p|off"
    ```
-## Configuração do Front-End
+## Executando o Front-End
 1. **Entre na pasta da aplicação**
    ```bash
       cd isp-front
+   
       cd isp
    ```
-2. **Execute o comando intalar as dependências**
+2. **Execute o comando instalar as dependências**
    ```bash
       npm install
    ```
@@ -65,8 +72,27 @@ Antes de começar, você precisará ter os seguintes softwares instalados:
    ```bash
       npm run dev
    ```
+## Executando a API
+1. **Entre na pasta da aplicação**
+   ```bash
+      cd api-isp
    
-
+      cd isp-api
+   
+      Clique com o botão direito em um local vazio e escolha abrir com o Intellij
+   ```
+2. **Dependências**
+   ```bash
+      Clique no botão do Maven no canto direito da tela para instalar as dependências
+   ```
+3. **Banco de dados**
+   ```bash
+      Adapte o application.properties para a configuração do seu banco de dados
+   ```
+4. **Execute o projeto**
+   ```bash
+      Clique no botão de run na barra superio para rodar o projeto
+   ```
 
       
    
