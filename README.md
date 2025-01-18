@@ -32,20 +32,30 @@ Antes de começar, você precisará ter os seguintes softwares instalados:
 1. **Acesse a pasta `Docker`:**
    ```bash
    cd Docker
+   ```
 2. **Inicie os contêineres**
    ```bash
    sudo ./services start
+   ```
 3. **Criar entidades através do MQTT**
    ```bash
    mosquitto_pub -h localhost -t "/ul/group4/movement01/attrs" -m "s|1000"
    ```
-    ```bash
-   mosquitto_pub -h localhost -t "/ul/group4/button01/attrs" -m "s|of"
+   ```bash
+   mosquitto_pub -h localhost -t "/ul/group4/button01/attrs" -m "s|off"
    ```
-     ```bash
+   ```bash
    mosquitto_pub -h localhost -t "/ul/group4/sensor01/attrs" -m "l|off"
    ```
-      ```bash
+   ```bash
    mosquitto_pub -h localhost -t "/ul/group4/led01/attrs" -m "p|off"
    ```
+## Configuração do Front-End
+   **Entre na pasta da aplicação**
+   ```bash
+      cd isp-front
+      cd isp
+   ```
+
+      
    
