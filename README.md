@@ -11,6 +11,7 @@ Este repositório contém a aplicação para o projeto de **Poste Inteligente**,
 ## Índice
 - [Requisitos](#requisitos)
 - [Configuração do Docker](#configuração-do-docker)
+- [Configuração do Front-End](#configuração-do-front-end)
 - [Executando o Frontend (Nuxt.js)](#executando-o-frontend-nuxtjs)
 - [Executando a API](#executando-a-api)
 - [Considerações Finais](#considerações-finais)
@@ -51,11 +52,21 @@ Antes de começar, você precisará ter os seguintes softwares instalados:
    mosquitto_pub -h localhost -t "/ul/group4/led01/attrs" -m "p|off"
    ```
 ## Configuração do Front-End
-   **Entre na pasta da aplicação**
+1. **Entre na pasta da aplicação**
    ```bash
       cd isp-front
       cd isp
    ```
+2. **Execute o comando intalar as dependências**
+   ```bash
+      npm install
+   ```
+3. **Inicie o servidor de desenvolvimento**
+   ```bash
+      npm run dev
+   ```
+   
+
 
       
    
