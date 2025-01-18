@@ -1,1 +1,38 @@
-# Poste_Inteligente_Fiware_Orion
+# Poste Inteligente com Fiware Orion
+
+Este repositório contém a aplicação para o projeto de **Poste Inteligente**, que utiliza Fiware Orion para gerenciamento de dados. O projeto está dividido em três principais componentes:
+
+1. **Docker**: Configuração do ambiente de desenvolvimento e serviços.
+2. **Frontend (Nuxt.js)**: Interface para gestão e visualização.
+3. **API**: Backend em Spring Boot responsável pela lógica do sistema.
+
+---
+
+## Índice
+- [Requisitos](#requisitos)
+- [Configuração do Docker](#configuração-do-docker)
+- [Executando o Frontend (Nuxt.js)](#executando-o-frontend-nuxtjs)
+- [Executando a API](#executando-a-api)
+- [Considerações Finais](#considerações-finais)
+
+---
+
+## Requisitos
+Antes de começar, você precisará ter os seguintes softwares instalados:
+
+- [Docker](https://www.docker.com/)
+- [Node.js](https://nodejs.org/) (recomendado: versão LTS)
+- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
+- [Java JDK](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) (para executar a API)
+
+---
+
+## Configuração do Docker
+
+1. **Acesse a pasta `Docker`:**
+   ```bash
+   cd Docker
+2. **Inicie os contêineres**
+   ```
+   sudo ./services start
+ 
